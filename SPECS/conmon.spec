@@ -3,12 +3,12 @@
 # https://github.com/containers/conmon
 %global import_path github.com/containers/%{name}
 %global git0 https://%{import_path}
-%global commit0 f633919178f6c8ee4fb41b848a056ec33f8d707d
+%global commit0 00e08f4a9ca5420de733bf542b930ad58e1a7e7d
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: conmon
 Epoch: 2
-Version: 2.1.7
+Version: 2.1.8
 Release: 1%{?dist}
 Summary: OCI container runtime monitor
 License: ASL 2.0
@@ -59,9 +59,21 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %{_mandir}/man8/*
 
 %changelog
-* Tue Mar 21 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.7-1
+* Fri Aug 25 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.8-1
+- update to https://github.com/containers/conmon/releases/tag/v2.1.8
+- Related: #2176063
+
+* Wed Jun 21 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.7-3
+- rebuild
+- Resolves: #2174381
+
+* Tue Apr 18 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.7-2
+- bump to preserve upgrade path from 9.2.0
+- Related: #2176063
+
+* Sun Mar 26 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.7-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.7
-- Resolves: #2173697
+- Related: #2176063
 
 * Tue Feb 07 2023 Jindrich Novy <jnovy@redhat.com> - 2:2.1.6-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.6
