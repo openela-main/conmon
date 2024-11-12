@@ -3,12 +3,12 @@
 # https://github.com/containers/conmon
 %global import_path github.com/containers/%{name}
 %global git0 https://%{import_path}
-%global commit0 2dcd736e46ded79a53339462bc251694b150f870
+%global commit0 e8896631295ccb0bfdda4284f1751be19b483264
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: conmon
-Epoch: 2
-Version: 2.1.10
+Epoch: 3
+Version: 2.1.12
 Release: 1%{?dist}
 Summary: OCI container runtime monitor
 License: ASL 2.0
@@ -59,6 +59,18 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %{_mandir}/man8/*
 
 %changelog
+* Wed May 29 2024 Jindrich Novy <jnovy@redhat.com> - 3:2.1.12-1
+- update to https://github.com/containers/conmon/releases/tag/v2.1.12
+- Related: RHEL-27608
+
+* Tue May 07 2024 Jindrich Novy <jnovy@redhat.com> - 3:2.1.11-1
+- update to https://github.com/containers/conmon/releases/tag/v2.1.11
+- Related: RHEL-27608
+
+* Mon Apr 08 2024 Lokesh Mandvekar <lsm5@redhat.com> - 3:2.1.10-2
+- bump epoch to preserve upgrade path from rhel 8.10
+- Related: RHEL-31950
+
 * Tue Jan 02 2024 Jindrich Novy <jnovy@redhat.com> - 2:2.1.10-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.10
 - Related: RHEL-2112
