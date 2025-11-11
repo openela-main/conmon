@@ -3,12 +3,12 @@
 # https://github.com/containers/conmon
 %global import_path github.com/containers/%{name}
 %global git0 https://%{import_path}
-%global commit0 e8896631295ccb0bfdda4284f1751be19b483264
+%global commit0 82de887596ed8ee6d9b2ee85e4f167f307bb569b
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name: conmon
 Epoch: 3
-Version: 2.1.12
+Version: 2.1.13
 Release: 1%{?dist}
 Summary: OCI container runtime monitor
 License: ASL 2.0
@@ -59,6 +59,10 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %{_mandir}/man8/*
 
 %changelog
+* Wed Feb 26 2025 Jindrich Novy <jnovy@redhat.com> - 3:2.1.13-1
+- update to https://github.com/containers/conmon/releases/tag/v2.1.13
+- Resolves: RHEL-80820
+
 * Wed May 29 2024 Jindrich Novy <jnovy@redhat.com> - 3:2.1.12-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.12
 - Related: RHEL-27608
