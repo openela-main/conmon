@@ -19,9 +19,9 @@ Epoch: 3
 %else
 Epoch: 2
 %endif
-Version: 2.1.12
+Version: 2.1.13
 License: Apache-2.0
-Release: 4%{?dist}
+Release: 1%{?dist}
 Summary: OCI container runtime monitor
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
@@ -75,6 +75,10 @@ sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 %endif
 
 %changelog
+* Wed Feb 26 2025 Jindrich Novy <jnovy@redhat.com> - 2:2.1.13-1
+- update to https://github.com/containers/conmon/releases/tag/v2.1.13
+- Resolves: RHEL-80818
+
 * Fri Jan 17 2025 Jindrich Novy <jnovy@redhat.com> - 3:2.1.12-4
 - Fix spec file, remove crio
 - Related: RHEL-58990
