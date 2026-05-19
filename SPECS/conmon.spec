@@ -1,53 +1,62 @@
-%global with_check 0
+%global with_debug 1
 
-# https://github.com/containers/conmon
-%global import_path github.com/containers/%{name}
-%global git0 https://%{import_path}
-%global commit0 82de887596ed8ee6d9b2ee85e4f167f307bb569b
-%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+%if 0%{?with_debug}
+%global _find_debuginfo_dwz_opts %{nil}
+%global _dwz_low_mem_die_limit 0
+%else
+%global debug_package %{nil}
+%endif
+
+%if %{defined rhel}
+%bcond_with docs
+%else
+%bcond_without docs
+%endif
 
 Name: conmon
 Epoch: 3
-Version: 2.1.13
+Version: 2.2.1
+License: Apache-2.0
 Release: 1%{?dist}
 Summary: OCI container runtime monitor
-License: ASL 2.0
-URL: %{git0}
-%if 0%{?branch:1}
-Source0: https://%{import_path}/tarball/%{commit0}/%{branch}-%{shortcommit0}.tar.gz
-%else
-Source0: https://%{import_path}/archive/%{commit0}/%{name}-%{version}-%{shortcommit0}.tar.gz
+URL: https://github.com/containers/%{name}
+# Tarball fetched from upstream
+Source0: %{url}/archive/v%{version}.tar.gz
+%if %{with docs}
+BuildRequires: go-md2man
 %endif
-# https://fedoraproject.org/wiki/PackagingDrafts/Go#Go_Language_Architectures
-#ExclusiveArch: %%{go_arches}
-# still use arch exclude as the macro above still refers %%{ix86} in RHEL8.4:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1905383
-ExcludeArch: %{ix86}
 BuildRequires: gcc
-BuildRequires: git
+BuildRequires: git-core
 BuildRequires: glib2-devel
-BuildRequires: systemd-devel
-BuildRequires: golang >= 1.12.12-4
-BuildRequires: /usr/bin/go-md2man
 BuildRequires: libseccomp-devel
+BuildRequires: pkgconfig
+BuildRequires: systemd-devel
+BuildRequires: systemd-libs
+BuildRequires: make
+Requires: glib2
+Requires: systemd-libs
+Requires: libseccomp
 
 %description
 %{summary}.
 
 %prep
-%if 0%{?branch:1}
-%autosetup -Sgit -n containers-%{name}-%{shortcommit0}
-%else
-%autosetup -Sgit -n %{name}-%{commit0}
-%endif
+%autosetup -Sgit %{name}-%{version}
+sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 
 %build
-export CFLAGS="%{optflags} -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
-export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
-%{__make} all
+%{__make} DEBUGFLAG="-g" LDFLAGS="-Wl,-z,relro -Wl,-z,now" bin/conmon
+
+%if %{with docs}
+%{__make} GOMD2MAN=go-md2man -C docs
+%endif
 
 %install
-%{__make} PREFIX=%{buildroot}%{_prefix} install
+%{__make} PREFIX=%{buildroot}%{_prefix} install.bin
+
+%if %{with docs}
+%{__make} PREFIX=%{buildroot}%{_prefix} -C docs install
+%endif
 
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
@@ -56,9 +65,20 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
+%if %{with docs}
 %{_mandir}/man8/*
+%endif
 
 %changelog
+* Thu Feb 12 2026 Jindrich Novy <jnovy@redhat.com> - 3:2.2.1-1
+- update to https://github.com/containers/conmon/releases/tag/v2.2.1
+- enable RELRO
+- Related: RHEL-111919
+
+* Thu Feb 05 2026 Jindrich Novy <jnovy@redhat.com> - 3:2.2.0-2
+- update to https://github.com/containers/conmon/releases/tag/v2.2.0
+- Resolves: RHEL-147114
+
 * Wed Feb 26 2025 Jindrich Novy <jnovy@redhat.com> - 3:2.1.13-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.13
 - Resolves: RHEL-80820
