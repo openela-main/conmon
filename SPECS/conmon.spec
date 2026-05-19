@@ -19,24 +19,22 @@ Epoch: 3
 %else
 Epoch: 2
 %endif
-Version: 2.1.13
+Version: 2.2.1
 License: Apache-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: OCI container runtime monitor
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
 Source0: %{url}/archive/v%{version}.tar.gz
 %if %{with docs}
-ExclusiveArch: %{golang_arches_future}
 BuildRequires: go-md2man
 %endif
 BuildRequires: gcc
 BuildRequires: git-core
-BuildRequires: glib2-devel
-BuildRequires: libseccomp-devel
-BuildRequires: systemd-devel
-BuildRequires: systemd-libs
 BuildRequires: make
+BuildRequires: pkgconfig(libsystemd)
+BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: pkgconfig(libseccomp)
 Requires: glib2
 Requires: systemd-libs
 Requires: libseccomp
@@ -49,10 +47,10 @@ Requires: libseccomp
 sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 
 %build
-%{__make} DEBUGFLAG="-g" bin/conmon
+%make_build bin/conmon
 
 %if %{with docs}
-%{__make} GOMD2MAN=go-md2man -C docs
+%make_build GOMD2MAN=go-md2man -C docs
 %endif
 
 %install
@@ -61,9 +59,6 @@ sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 %if %{with docs}
 %{__make} PREFIX=%{buildroot}%{_prefix} -C docs install
 %endif
-
-#define license tag if not already defined
-%{!?_licensedir:%global license %doc}
 
 %files
 %license LICENSE
@@ -75,6 +70,19 @@ sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 %endif
 
 %changelog
+* Mon Feb 16 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.1-2
+- use proper macros in spec file and simplify
+- Related: RHEL-111917
+
+* Thu Feb 12 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.1-1
+- update to https://github.com/containers/conmon/releases/tag/v2.2.1
+- enable RELRO
+- Related: RHEL-122178
+
+* Tue Feb 03 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.0-1
+- update to https://github.com/containers/conmon/releases/tag/v2.2.0
+- Related: RHEL-122178
+
 * Wed Feb 26 2025 Jindrich Novy <jnovy@redhat.com> - 2:2.1.13-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.13
 - Resolves: RHEL-80818
