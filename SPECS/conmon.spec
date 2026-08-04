@@ -17,11 +17,13 @@ Name: conmon
 Epoch: 3
 Version: 2.2.1
 License: Apache-2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: OCI container runtime monitor
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
 Source0: %{url}/archive/v%{version}.tar.gz
+# https://github.com/containers/conmon/pull/659
+Patch0001: 0001-Reset-create_pid-after-waitpid-to-prevent-signaling-.patch
 %if %{with docs}
 BuildRequires: go-md2man
 %endif
@@ -70,6 +72,10 @@ sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 %endif
 
 %changelog
+* Mon Jun 15 2026 Jindrich Novy <jnovy@redhat.com> - 3:2.2.1-2
+- reset create_pid after waitpid to prevent signaling unrelated processes
+- Resolves: RHEL-180615
+
 * Thu Feb 12 2026 Jindrich Novy <jnovy@redhat.com> - 3:2.2.1-1
 - update to https://github.com/containers/conmon/releases/tag/v2.2.1
 - enable RELRO

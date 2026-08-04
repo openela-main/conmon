@@ -1,0 +1,29 @@
+From 8596fc6462efa2bd0db47485931cfcd704ca0637 Mon Sep 17 00:00:00 2001
+From: Jindrich Novy <jnovy@redhat.com>
+Date: Thu, 21 May 2026 09:38:48 +0200
+Subject: [PATCH] Reset create_pid after waitpid to prevent signaling unrelated
+ processes
+
+After the synchronous waitpid(create_pid) succeeds, create_pid was
+never reset to -1. If the PID was later reused by another process,
+on_sig_exit() would send SIGTERM to that unrelated process.
+
+Resolves: RHEL-180615
+
+Signed-off-by: Jindrich Novy <jnovy@redhat.com>
+---
+ src/conmon.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/conmon.c b/src/conmon.c
+index 0abbd17d..24a7da18 100644
+--- a/src/conmon.c
++++ b/src/conmon.c
+@@ -360,6 +360,7 @@ int main(int argc, char *argv[])
+ 			}
+ 			pexitf("Failed to wait for `runtime %s`", opt_exec ? "exec" : "create");
+ 		}
++		create_pid = -1;
+ 	}
+ 
+ 	/* For exec operations, a non-zero runtime exit status reflects the exit status of the exec'd command,
