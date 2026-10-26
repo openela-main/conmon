@@ -12,7 +12,7 @@
 Name: conmon
 Epoch: 3
 Version: 2.1.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: OCI container runtime monitor
 License: ASL 2.0
 URL: %{git0}
@@ -62,6 +62,10 @@ export LDFLAGS="-pie -Wl,-z,relro -Wl,-z,now"
 %{_mandir}/man8/*
 
 %changelog
+* Thu Oct 22 2026 Jindrich Novy <jnovy@redhat.com> - 3:2.1.10-2
+- Rebuild for CVE-2026-78667 and CVE-2026-111943
+- Resolves: RHEL-278824 RHEL-287445
+
 * Tue Jan 02 2024 Jindrich Novy <jnovy@redhat.com> - 3:2.1.10-1
 - update to https://github.com/containers/conmon/releases/tag/v2.1.10
 - Related: Jira:RHEL-2110
