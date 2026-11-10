@@ -21,7 +21,7 @@ Epoch: 2
 %endif
 Version: 2.2.1
 License: Apache-2.0
-Release: 2%{?dist}
+Release: 4%{?dist}
 Summary: OCI container runtime monitor
 URL: https://github.com/containers/%{name}
 # Tarball fetched from upstream
@@ -47,7 +47,7 @@ Requires: libseccomp
 sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 
 %build
-%make_build bin/conmon
+%make_build bin/conmon CFLAGS="%{optflags}" LDFLAGS="%{build_ldflags}"
 
 %if %{with docs}
 %make_build GOMD2MAN=go-md2man -C docs
@@ -70,6 +70,15 @@ sed -i 's/install.bin: bin\/conmon/install.bin:/' Makefile
 %endif
 
 %changelog
+* Fri May 29 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.1-4
+- Add TMT test infrastructure for tier0 gating
+- Resolves: RHEL-180349
+
+* Fri Feb 27 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.1-3
+- pass %%{optflags} and %%{build_ldflags} to enable stack protector
+  and FORTIFY_SOURCE hardening flags
+- Resolves: RHEL-152224
+
 * Mon Feb 16 2026 Jindrich Novy <jnovy@redhat.com> - 2:2.2.1-2
 - use proper macros in spec file and simplify
 - Related: RHEL-111917
